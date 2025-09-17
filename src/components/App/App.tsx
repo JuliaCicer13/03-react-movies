@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import css from './App.css';
-import axios from 'axios';
 import SearchBar from '../SearchBar/SearchBar';
 import {toast} from 'react-hot-toast';
 import Loader from "../Loader/Loader";
@@ -21,16 +20,15 @@ export default function App() {
   const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
-     async function handleSearch (topic: string) {
+     async function handleSearch (query: string) {
      try {
-     setLoader(true);
-     setIsError(false);
-     if(movies === 0) {
+      if(!movies || movies.length === 0) {
       return toast.error("No movies found for your request.");
-     } else {
-      movies[];
      }
-     const data = await fetchMovies(topic);
+      setLoader(true);
+      setIsError(false);
+
+     const data = await fetchMovies(query);
      setMovies(data);
    } catch {
        setIsError(true);
@@ -48,7 +46,7 @@ export default function App() {
     <SearchBar onSubmit={handleSearch}/>
     {isLoader && <Loader/>}
     {isError && <ErrorMessage/>}
-    {movies.length > 0 && <MovieGrid items={movies}/>}
+    {movies.length > 0 && <MovieGrid onSelect={openModal} items={movies}/>}
     <button onClick={openModal}>Open modal</button>
     {isModalOpen && <MovieModal onClose={closeModal}/>}
     </>

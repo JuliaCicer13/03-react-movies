@@ -4,8 +4,8 @@ import type { Movie } from "../types/movies";
 interface MoviesHttpResponse {
     hits: Movie[];
 }
-export const fetchMovies = async (topic: string): Promise<Movie[]> =>{
-  const response  = await axios.get<MoviesHttpResponse>(`https://api.themoviedb.org/3/search?query=${topic}`);
+export const fetchMovies = async (query: string): Promise<Movie[]> =>{
+  const response  = await axios.get<MoviesHttpResponse>(`https://api.themoviedb.org/3/search?query=${query}`);
    return response.data.hits;
 }
 
@@ -24,3 +24,12 @@ export const fetchMovies = async (topic: string): Promise<Movie[]> =>{
 //   .then(json => console.log(json))
 //   .catch(err => console.error(err));
 //   console.log(response.data);
+
+// {
+//   params: {
+//     // твої параметри
+//   },
+//   headers: {
+//     Authorization: `Bearer твійТокен`,
+//   }
+// }
