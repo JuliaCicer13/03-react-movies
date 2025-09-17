@@ -1,76 +1,56 @@
-import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import css from './App.css'
-import OrderForm from "../OrderForm/OrderForm";
-import SearchForm from '../SearchForm/SearchForm';
+import { useEffect, useState } from 'react';
+import css from './App.css';
 import axios from 'axios';
-import ArticleList from "../ArticleList/ArticleList";
-import type {Article} from "../../types/article"
-import { fetchArticles} from '../../services/ArticleServices';
-import {useId} from "react";
-import Timer from "../Timer/Timer";
-import Modal from "../Modal/Modal";
+import SearchBar from '../SearchBar/SearchBar';
+import {toast} from 'react-hot-toast';
+import Loader from "../Loader/Loader";
+import type {Movie} from "../../types/movies";
+import ErrorMessage from "../ErrorMessage/ErrorMessage";
+import { fetchMovies }from "../../services/movieService";
+import MovieGrid from "../MovieGrid/MovieGrid";
+import MovieModal from '../MovieModal/MovieModal';
 
-export default function App() {
-   const [articles, setArticles] = useState<Article[]>([]);
-   const [isLoading, setLoading] = useState(false);
-   const [isError, setError] = useState(false);
-   const [person, setPerson] = useState(null);
-   const [count, setCount] = useState(1);
-   const [isOpen, setIsOpen] = useState(false);
-   const [isModalOpen, setIsModal] = useState(false);
-   const [clicks, setClicks] = useState(0);
+export default function App() {  
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [isLoader, setLoader] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
-   const modalOpen = () => setIsModal(true);
-   const modalClose = () => setIsModal(false);
+  const openModal = () => setIsModalOpen(true);
 
-useEffect(() => {
-  localStorage.setItem("saved-clicks",JSON.stringify(clicks))
-    console.log(`Effect ran for: ${count}`);
+  const closeModal = () => setIsModalOpen(false);
 
-		// Повертаємо функцію очищення ефекта
-    return () => {
-      console.log(`Clean up for ${count}`);
-    };
-  }, [count]);
-
-
-    const handleSearch = async (topic: string) => {
+  useEffect(() => {
+     async function handleSearch (topic: string) {
      try {
-       setLoading(true);
-       setError(false);
-
-      const data = await fetchArticles(topic);
-       setArticles(data);
-    } catch {
-       setError(true);
-     } finally {
-        setLoading(false);
+     setLoader(true);
+     setIsError(false);
+     if(movies === 0) {
+      return toast.error("No movies found for your request.");
+     } else {
+      movies[];
+     }
+     const data = await fetchMovies(topic);
+     setMovies(data);
+   } catch {
+       setIsError(true);
+   } finally {
+       setLoader(false);
    }
-   
-   };
-   
+
+ }
+ handleSearch();
+
+  }, [movies]);
+
   return (
     <>
-      <h2>The count is {count}</h2>
-       <SearchForm onSubmit={handleSearch} /> 
-      {isLoading && <p>Loading data?please wait...</p>}
-      {isError && <p>Ooooop... something went wrong, please try again</p>}
-      {articles.length > 0 && <ArticleList items={articles}/>}
-      <button onClick={() => setIsOpen(!isOpen)}>
-        {isOpen ? "Hide time" : "Show time"}
-      </button>
-       {isOpen && <Timer/>}
-      <button onClick={()=> setCount(count + 1)}>The count is {count}</button>
-      <pre>{JSON.stringify(person, null, 2)}</pre>
-      <button onClick={modalOpen}>Open modal</button>
-       {isModalOpen && (<Modal onClose={modalClose}>
-        <h2>Custom Modal Content</h2>
-        <p>This JSX will be passed as children prop</p>
-       </Modal>)}
-       <button onClick={() => setClicks(clicks + 1)}>  You clicked {clicks} times</button>
-       <button onClick={() => setClicks(0)}>Reset</button>
+    <SearchBar onSubmit={handleSearch}/>
+    {isLoader && <Loader/>}
+    {isError && <ErrorMessage/>}
+    {movies.length > 0 && <MovieGrid items={movies}/>}
+    <button onClick={openModal}>Open modal</button>
+    {isModalOpen && <MovieModal onClose={closeModal}/>}
     </>
   );
 }
