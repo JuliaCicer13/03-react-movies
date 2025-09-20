@@ -27,17 +27,15 @@ export default function App() {
      }
       setLoader(true);
       setIsError(false);
-
-     const data = await fetchMovies(query);
-     setMovies(data);
+     const dataMovies = await fetchMovies(query);
+      setMovies(dataMovies);
    } catch {
-       setIsError(true);
+      setIsError(true);
    } finally {
-       setLoader(false);
+      setLoader(false);
    }
-
  }
- handleSearch();
+   handleSearch(fetchMovies);
 
   }, [movies]);
 
