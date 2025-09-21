@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import css from './App.css';
+import { useState } from 'react';
 import SearchBar from '../SearchBar/SearchBar';
 import {toast} from 'react-hot-toast';
 import Loader from "../Loader/Loader";
@@ -19,15 +18,16 @@ export default function App() {
 
   const closeModal = () => setIsModalOpen(false);
 
-  useEffect(() => {
-     async function handleSearch (query: string) {
+ 
+   const handleSearch = async (query: string) =>{
      try {
-      if(!movies || movies.length === 0) {
-      return toast.error("No movies found for your request.");
-     }
       setLoader(true);
       setIsError(false);
      const dataMovies = await fetchMovies(query);
+       if(!movies || movies.length === 0) {
+       toast.error("No movies found for your request.");
+       return;
+     }
       setMovies(dataMovies);
    } catch {
       setIsError(true);
@@ -35,9 +35,7 @@ export default function App() {
       setLoader(false);
    }
  }
-   handleSearch(fetchMovies);
 
-  }, [movies]);
 
   return (
     <>
