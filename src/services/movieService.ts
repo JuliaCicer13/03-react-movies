@@ -18,6 +18,6 @@ export const fetchMovies = async (query: string): Promise<Movie[]> =>{
       },
     });
     console.log("Raw response:", response.data.hits);
-
+        return response.data.hits;
 }
 
