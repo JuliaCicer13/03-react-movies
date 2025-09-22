@@ -30,7 +30,7 @@ export default function MovieModal ({movie,onClose}: ModalProps) {
      }
     }, [onClose])
 
-    return createPortal(
+return createPortal(
  <div className={css.backdrop} 
       onClick={handleBackdropsClick}
       role="dialog" 
