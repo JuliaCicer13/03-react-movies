@@ -12,18 +12,18 @@ export default function App() {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [isLoader, setLoader] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [selectedMovie, setIsSelectedMovie] = useState<Movie | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
-  const openModal = () => setIsModalOpen(true);
-
-  const closeModal = () => setIsModalOpen(false);
 
  
    const handleSearch = async (query: string) =>{
      try {
       setLoader(true);
       setIsError(false);
+      setMovies([]);
+
      const dataMovies = await fetchMovies(query);
+
        if(!movies || movies.length === 0) {
        toast.error("No movies found for your request.");
        return;
@@ -34,7 +34,17 @@ export default function App() {
    } finally {
       setLoader(false);
    }
- }
+ };
+
+   const openModal = (movie: Movie) => {
+    setIsSelectedMovie(movie);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setIsSelectedMovie(null);
+  };
 
 
   return (
@@ -42,9 +52,8 @@ export default function App() {
     <SearchBar onSubmit={handleSearch}/>
     {isLoader && <Loader/>}
     {isError && <ErrorMessage/>}
-    {movies.length > 0 && <MovieGrid onSelect={openModal} items={movies}/>}
-    <button onClick={openModal}>Open modal</button>
-    {isModalOpen && <MovieModal onClose={closeModal}/>}
+    {movies.length > 0 && <MovieGrid onSelect={openModal} movies={movies}/>}
+    {isModalOpen && selectedMovie && <MovieModal movie={selectedMovie} onClose={closeModal}/>}
     </>
   );
 }
