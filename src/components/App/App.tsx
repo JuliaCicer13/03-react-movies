@@ -28,6 +28,7 @@ export default function App() {
        toast.error("No movies found for your request.");
        return;
      }
+     console.log("Movies from API:", dataMovies);
       setMovies(dataMovies);
    } catch {
       setIsError(true);
