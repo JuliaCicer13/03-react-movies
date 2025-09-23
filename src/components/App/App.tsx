@@ -7,6 +7,7 @@ import ErrorMessage from "../ErrorMessage/ErrorMessage";
 import { fetchMovies }from "../../services/movieService";
 import MovieGrid from "../MovieGrid/MovieGrid";
 import MovieModal from '../MovieModal/MovieModal';
+import {Toaster} from "react-hot-toast";
 
 export default function App() {  
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -52,6 +53,7 @@ export default function App() {
     {isError && <ErrorMessage/>}
     {movies.length > 0 && <MovieGrid onSelect={openModal} movies={movies}/>}
     {selectedMovie && <MovieModal movie={selectedMovie} onClose={closeModal}/>}
+    <Toaster position="top-right" reverseOrder={false}/>
     </>
   );
 }
